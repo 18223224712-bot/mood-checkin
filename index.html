@@ -1957,11 +1957,44 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Hugging Face API错误: ${response.statusText}`);
+                    const errorText = await response.text();
+                    let errorMessage = `Hugging Face API错误 (${response.status}): `;
+                    
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage += errorData.error || errorText;
+                    } catch {
+                        errorMessage += errorText || response.statusText;
+                    }
+                    
+                    // 根据状态码提供更具体的错误信息
+                    if (response.status === 401 || response.status === 403) {
+                        errorMessage += '\n\n💡 Token可能无效或已过期，请检查：\n1. Token格式是否正确（应以hf_开头）\n2. Token是否已过期\n3. Token权限是否足够（需要read权限）';
+                    } else if (response.status === 503) {
+                        errorMessage += '\n\n💡 模型可能正在加载，请稍后重试';
+                    }
+                    
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
-                return data[0]?.generated_text?.split('助手:')[1]?.trim() || '抱歉，我暂时无法理解，能再说一遍吗？';
+                
+                // 处理Hugging Face返回的不同格式
+                let generatedText = '';
+                if (Array.isArray(data)) {
+                    generatedText = data[0]?.generated_text || '';
+                } else if (data.generated_text) {
+                    generatedText = data.generated_text;
+                } else if (typeof data === 'string') {
+                    generatedText = data;
+                }
+                
+                // 提取助手回复
+                if (generatedText.includes('助手:')) {
+                    generatedText = generatedText.split('助手:').pop().trim();
+                }
+                
+                return generatedText || '抱歉，我暂时无法理解，能再说一遍吗？';
             },
 
             async callGroq(message, systemPrompt, config) {
@@ -2191,10 +2224,13 @@
                     }, 500);
                 } else if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
                     errorMsg += '\n\n💡 网络连接问题：\n1. 检查网络连接是否正常\n2. 代理服务可能暂时不可用\n3. 稍后重试\n\n💡 如果问题持续，可以切换到API Key模式';
-                } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403')) {
-                    errorMsg += '\n\n💡 API Key可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查API Key是否正确\n3. 确认有足够的免费额度\n\n🔗 获取Hugging Face Access Token：https://huggingface.co/settings/tokens';
+                } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
+                    errorMsg += '\n\n💡 Token可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查Token格式是否正确（应以hf_开头）\n3. 确认Token权限足够（需要read权限）\n4. 如果Token已过期，请重新生成\n\n🔗 获取新的Hugging Face Access Token：https://huggingface.co/settings/tokens';
+                } else if (error.message.includes('Hugging Face API错误')) {
+                    // 显示详细的API错误信息
+                    errorMsg += `\n\n${error.message}\n\n💡 可能的原因：\n1. Token无效或已过期\n2. Token权限不足\n3. 模型暂时不可用\n4. API配额已用完\n\n🔧 解决方法：\n1. 检查Token是否正确（格式：hf_xxxxx）\n2. 确认Token有read权限\n3. 如果问题持续，尝试重新生成Token\n\n🔗 重新生成Token：https://huggingface.co/settings/tokens`;
                 } else {
-                    errorMsg += `\n\n错误：${error.message}\n\n💡 请点击右上角⚙️检查配置或切换到API Key模式`;
+                    errorMsg += `\n\n错误详情：${error.message}\n\n💡 请点击右上角⚙️检查配置或切换到API Key模式`;
                 }
                 
                 addMessageToChat('assistant', errorMsg);
