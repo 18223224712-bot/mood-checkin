@@ -81,8 +81,10 @@ exports.handler = async (event, context) => {
 
         const prompt = `${systemPrompt || '你是一个温暖、贴心的情感陪伴助手。'}\n\n${conversationText}\n助手:`;
 
-        // 调用Hugging Face API（使用新的router端点）
-        const response = await fetch(`https://router.huggingface.co/models/${model}`, {
+        // 调用Hugging Face API
+        // 注意：api-inference.huggingface.co 虽然显示 deprecated，但目前仍可使用
+        // router.huggingface.co 需要不同的格式（OpenAI兼容），暂时使用旧端点
+        const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
