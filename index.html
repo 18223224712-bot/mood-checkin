@@ -1950,60 +1950,80 @@
                     throw new Error('请配置Hugging Face API Key');
                 }
 
-                const response = await fetch(`https://api-inference.huggingface.co/models/${config.model}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${config.apiKey}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        inputs: `${systemPrompt}\n\n用户: ${message}\n助手:`,
-                        parameters: {
-                            max_new_tokens: 150,
-                            temperature: 0.7
+                console.log('开始直接调用Hugging Face API，模型:', config.model);
+
+                try {
+                    const response = await fetch(`https://api-inference.huggingface.co/models/${config.model}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${config.apiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            inputs: `${systemPrompt}\n\n用户: ${message}\n助手:`,
+                            parameters: {
+                                max_new_tokens: 150,
+                                temperature: 0.7
+                            }
+                        })
+                    });
+
+                    console.log('API响应状态:', response.status, response.statusText);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorMessage = `Hugging Face API错误 (${response.status}): `;
+                        
+                        try {
+                            const errorData = JSON.parse(errorText);
+                            errorMessage += errorData.error || JSON.stringify(errorData) || errorText;
+                            console.error('API错误详情:', errorData);
+                        } catch {
+                            errorMessage += errorText || response.statusText;
+                            console.error('API错误文本:', errorText);
                         }
-                    })
-                });
+                        
+                        // 根据状态码提供更具体的错误信息
+                        if (response.status === 401 || response.status === 403) {
+                            errorMessage += '\n\n💡 Token可能无效或已过期，请检查：\n1. Token格式是否正确（应以hf_开头）\n2. Token是否已过期\n3. Token权限是否足够（需要read权限）\n4. 确认Token没有多余的空格';
+                        } else if (response.status === 503) {
+                            errorMessage += '\n\n💡 模型可能正在加载，请等待30秒后重试';
+                        } else if (response.status === 429) {
+                            errorMessage += '\n\n💡 API调用频率过高，请稍后重试';
+                        }
+                        
+                        throw new Error(`Hugging Face API错误: ${errorMessage}`);
+                    }
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    let errorMessage = `Hugging Face API错误 (${response.status}): `;
+                    const data = await response.json();
+                    console.log('API响应数据:', data);
                     
-                    try {
-                        const errorData = JSON.parse(errorText);
-                        errorMessage += errorData.error || errorText;
-                    } catch {
-                        errorMessage += errorText || response.statusText;
+                    // 处理Hugging Face返回的不同格式
+                    let generatedText = '';
+                    if (Array.isArray(data)) {
+                        generatedText = data[0]?.generated_text || '';
+                    } else if (data.generated_text) {
+                        generatedText = data.generated_text;
+                    } else if (typeof data === 'string') {
+                        generatedText = data;
                     }
                     
-                    // 根据状态码提供更具体的错误信息
-                    if (response.status === 401 || response.status === 403) {
-                        errorMessage += '\n\n💡 Token可能无效或已过期，请检查：\n1. Token格式是否正确（应以hf_开头）\n2. Token是否已过期\n3. Token权限是否足够（需要read权限）';
-                    } else if (response.status === 503) {
-                        errorMessage += '\n\n💡 模型可能正在加载，请稍后重试';
+                    // 提取助手回复
+                    if (generatedText.includes('助手:')) {
+                        generatedText = generatedText.split('助手:').pop().trim();
                     }
                     
-                    throw new Error(errorMessage);
+                    return generatedText || '抱歉，我暂时无法理解，能再说一遍吗？';
+                } catch (fetchError) {
+                    // 捕获网络错误或其他fetch错误
+                    console.error('Fetch错误:', fetchError);
+                    if (fetchError.message && fetchError.message.includes('Hugging Face API错误')) {
+                        // 如果是API错误，直接抛出
+                        throw fetchError;
+                    }
+                    // 网络错误
+                    throw new Error(`网络连接错误: ${fetchError.message || '无法连接到Hugging Face API，请检查网络连接'}`);
                 }
-
-                const data = await response.json();
-                
-                // 处理Hugging Face返回的不同格式
-                let generatedText = '';
-                if (Array.isArray(data)) {
-                    generatedText = data[0]?.generated_text || '';
-                } else if (data.generated_text) {
-                    generatedText = data.generated_text;
-                } else if (typeof data === 'string') {
-                    generatedText = data;
-                }
-                
-                // 提取助手回复
-                if (generatedText.includes('助手:')) {
-                    generatedText = generatedText.split('助手:').pop().trim();
-                }
-                
-                return generatedText || '抱歉，我暂时无法理解，能再说一遍吗？';
             },
 
             async callGroq(message, systemPrompt, config) {
@@ -2231,23 +2251,23 @@
                             }
                         }, 300);
                     }, 500);
-                } else if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+                } else if (error.message.includes('Failed to fetch') || error.message.includes('Network') || error.message.includes('网络连接错误')) {
                     // 检查是否有配置Token
                     const config = Assistant.getApiConfig();
                     const hasToken = config.huggingface && config.huggingface.apiKey && config.huggingface.apiKey.trim();
                     
                     if (hasToken) {
-                        errorMsg += '\n\n💡 网络连接问题，但检测到你已配置Token\n\n🔍 请按F12打开浏览器控制台，查看详细错误信息\n\n可能的原因：\n1. Token格式不正确\n2. Token权限不足\n3. Hugging Face API暂时不可用\n4. 模型正在加载中（首次调用需要等待）\n\n💡 建议：\n1. 检查Token是否正确保存（点击⚙️查看）\n2. 确认Token格式：hf_xxxxx\n3. 尝试重新生成Token';
+                        errorMsg += `\n\n💡 网络连接问题，但检测到你已配置Token\n\n错误详情：${error.message}\n\n🔍 请按F12打开浏览器控制台（Console标签），查看详细错误信息\n\n可能的原因：\n1. CORS跨域问题（浏览器阻止了API请求）\n2. Token格式不正确或包含特殊字符\n3. Token权限不足\n4. Hugging Face API暂时不可用\n5. 模型正在加载中（首次调用需要等待30-60秒）\n\n💡 建议：\n1. 打开浏览器控制台（F12），查看红色错误信息\n2. 检查Token是否正确保存（点击⚙️查看，确认是hf_开头）\n3. 尝试在控制台手动测试Token（我会提供测试代码）\n4. 如果模型正在加载，等待30秒后重试`;
                     } else {
                         errorMsg += '\n\n💡 网络连接问题：\n1. 检查网络连接是否正常\n2. 代理服务可能暂时不可用\n3. 稍后重试\n\n💡 如果问题持续，请配置API Key：\n1. 点击右上角⚙️按钮\n2. 选择"🤗 Hugging Face"\n3. 粘贴你的Access Token\n4. 保存配置';
                     }
-                } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
-                    errorMsg += '\n\n💡 Token可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查Token格式是否正确（应以hf_开头）\n3. 确认Token权限足够（需要read权限）\n4. 如果Token已过期，请重新生成\n\n🔗 获取新的Hugging Face Access Token：https://huggingface.co/settings/tokens';
                 } else if (error.message.includes('Hugging Face API错误')) {
                     // 显示详细的API错误信息
-                    errorMsg += `\n\n${error.message}\n\n💡 可能的原因：\n1. Token无效或已过期\n2. Token权限不足\n3. 模型暂时不可用\n4. API配额已用完\n\n🔧 解决方法：\n1. 检查Token是否正确（格式：hf_xxxxx）\n2. 确认Token有read权限\n3. 如果问题持续，尝试重新生成Token\n\n🔗 重新生成Token：https://huggingface.co/settings/tokens`;
+                    errorMsg += `\n\n${error.message}\n\n💡 可能的原因：\n1. Token无效或已过期\n2. Token权限不足\n3. 模型暂时不可用（503错误表示模型正在加载）\n4. API配额已用完\n5. Token格式错误（应确保以hf_开头，没有多余空格）\n\n🔧 解决方法：\n1. 检查Token是否正确（格式：hf_xxxxx）\n2. 确认Token有read权限\n3. 如果看到503错误，等待30-60秒后重试（模型首次加载需要时间）\n4. 如果问题持续，尝试重新生成Token\n\n🔗 重新生成Token：https://huggingface.co/settings/tokens`;
+                } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
+                    errorMsg += `\n\n错误详情：${error.message}\n\n💡 Token可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查Token格式是否正确（应以hf_开头）\n3. 确认Token权限足够（需要read权限）\n4. 如果Token已过期，请重新生成\n\n🔗 获取新的Hugging Face Access Token：https://huggingface.co/settings/tokens`;
                 } else {
-                    errorMsg += `\n\n错误详情：${error.message}\n\n💡 请点击右上角⚙️检查配置或切换到API Key模式`;
+                    errorMsg += `\n\n错误详情：${error.message}\n\n🔍 请按F12打开浏览器控制台（Console标签），查看详细错误信息\n\n💡 请点击右上角⚙️检查配置或切换到API Key模式`;
                 }
                 
                 addMessageToChat('assistant', errorMsg);
