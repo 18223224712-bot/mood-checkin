@@ -1460,22 +1460,22 @@
         // ========== 心情音乐推荐 ==========
         const MusicRecommendations = {
             happy: [
-                { icon: '🎵', title: '轻快流行', description: '节奏明快的流行音乐', search: '轻快流行音乐' },
-                { icon: '🎸', title: '摇滚能量', description: '充满活力的摇滚歌曲', search: '摇滚音乐' },
-                { icon: '🎹', title: '电子舞曲', description: '动感十足的电子音乐', search: '电子舞曲' },
-                { icon: '🎤', title: '快乐民谣', description: '轻松愉快的民谣歌曲', search: '快乐民谣' }
+                { icon: '🎤', title: '迪士尼王子', description: '节奏明快的流行音乐', url: 'https://music.163.com/song?id=2754119732&userid=3291952720' },
+                { icon: '🎸', title: '旋律爽！', description: '充满活力的摇滚歌曲', url: 'https://music.163.com/song?id=1418953604&userid=3291952720' },
+                { icon: '🎹', title: '恋爱要听告五人', description: '动感十足的电子音乐', url: 'https://music.163.com/song?id=563563366&userid=3291952720' },
+                { icon: '🎵', title: '夏日傍晚', description: '轻松愉快的民谣歌曲', url: 'https://music.163.com/song?id=2000729736&userid=3291952720' }
             ],
             neutral: [
-                { icon: '🎼', title: '轻音乐', description: '舒缓放松的纯音乐', search: '轻音乐 纯音乐' },
-                { icon: '🎧', title: '爵士乐', description: '优雅的爵士旋律', search: '爵士音乐' },
-                { icon: '🎹', title: '钢琴曲', description: '宁静的钢琴独奏', search: '钢琴曲' },
-                { icon: '🌊', title: '自然声音', description: '大自然的声音疗愈', search: '自然声音 白噪音' }
+                { icon: '🎼', title: '小蝴蝶 英格兰草地 初春', description: '舒缓放松的纯音乐', url: 'https://music.163.com/song?id=2609041173&userid=3291952720' },
+                { icon: '🎧', title: '闭上眼睛享受', description: '优雅的爵士旋律', url: 'https://music.163.com/song?id=1374227544&userid=3291952720' },
+                { icon: '🎹', title: '寻欢作乐', description: '宁静的钢琴独奏', url: 'https://music.163.com/song?id=2094488216&userid=3291952720' },
+                { icon: '🌊', title: '大家都一样', description: '大自然的声音疗愈', url: 'https://music.163.com/song?id=186513&userid=3291952720' }
             ],
             sad: [
-                { icon: '🎻', title: '治愈系', description: '温暖治愈的音乐', search: '治愈系音乐' },
-                { icon: '🎵', title: '抒情歌曲', description: '情感丰富的抒情音乐', search: '抒情歌曲' },
-                { icon: '🎹', title: '轻音乐', description: '平静心灵的纯音乐', search: '轻音乐 放松' },
-                { icon: '🌙', title: '夜晚音乐', description: '适合夜晚的安静音乐', search: '夜晚音乐 安静' }
+                { icon: '🎻', title: '会好起来的！', description: '温暖治愈的音乐', url: 'https://music.163.com/song?id=2758146146&userid=3291952720' },
+                { icon: '🎵', title: '禁止内耗！', description: '情感丰富的抒情音乐', url: 'https://music.163.com/song?id=454966913&userid=3291952720' },
+                { icon: '🎹', title: '感受情绪吧 小宝', description: '平静心灵的纯音乐', url: 'https://music.163.com/song?id=2049541052&userid=3291952720' },
+                { icon: '🌙', title: '夜晚音乐', description: '适合夜晚的安静音乐', url: 'https://music.163.com/song?id=1315440917&userid=3291952720' }
             ]
         };
 
@@ -1485,14 +1485,14 @@
             const container = document.getElementById('musicRecommendations');
 
             container.innerHTML = recommendations.map(music => {
-                // 使用网易云音乐搜索链接
-                const searchUrl = `https://music.163.com/#/search/m/?s=${encodeURIComponent(music.search)}`;
+                // 使用直接歌曲链接
+                const musicUrl = music.url || `https://music.163.com/#/search/m/?s=${encodeURIComponent(music.title)}`;
                 return `
-                    <div class="music-card" onclick="window.open('${searchUrl}', '_blank')">
+                    <div class="music-card" onclick="window.open('${musicUrl}', '_blank')">
                         <div class="music-icon">${music.icon}</div>
                         <div class="music-title">${music.title}</div>
                         <div class="music-description">${music.description}</div>
-                        <a href="${searchUrl}" target="_blank" class="music-link" onclick="event.stopPropagation()">🎵 去听听</a>
+                        <a href="${musicUrl}" target="_blank" class="music-link" onclick="event.stopPropagation()">🎵 去听听</a>
                     </div>
                 `;
             }).join('');
