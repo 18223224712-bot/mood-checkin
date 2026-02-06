@@ -1898,7 +1898,9 @@
                                 })),
                                 { role: 'user', content: message }
                             ],
-                            systemPrompt: systemPrompt
+                            systemPrompt: systemPrompt,
+                            // 如果用户配置了Token，也传递给代理（作为备用，如果环境变量未配置）
+                            apiKey: config.apiKey && config.apiKey.trim() ? config.apiKey : undefined
                         })
                     });
 

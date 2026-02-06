@@ -44,9 +44,16 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // 从环境变量获取API Key（需要在Netlify后台配置）
-        const apiKey = process.env.HUGGINGFACE_API_KEY;
+        // 从环境变量获取API Key（优先使用环境变量）
+        // 如果环境变量未配置，可以使用请求中的apiKey（备用方案）
+        let apiKey = process.env.HUGGINGFACE_API_KEY;
         const model = process.env.HUGGINGFACE_MODEL || 'meta-llama/Llama-3.2-3B-Instruct';
+        
+        // 如果环境变量未配置，尝试从请求中获取（备用方案）
+        if (!apiKey) {
+            const requestData = JSON.parse(event.body);
+            apiKey = requestData.apiKey;
+        }
         
         if (!apiKey) {
             return {
@@ -56,7 +63,7 @@ exports.handler = async (event, context) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    error: 'API Key not configured. Please set HUGGINGFACE_API_KEY in Netlify environment variables.' 
+                    error: 'API Key not configured. Please set HUGGINGFACE_API_KEY in Netlify environment variables or provide apiKey in request.' 
                 })
             };
         }
