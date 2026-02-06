@@ -300,11 +300,750 @@
         .mood-selection.hidden {
             display: none;
         }
+
+        /* 打卡提醒样式 */
+        .checkin-reminder {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 179, 71, 0.3);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .checkin-reminder.completed {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .streak-info {
+            font-size: 0.9em;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        /* 心情历史图表样式 */
+        .history-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .history-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 150px;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #667eea 0%, #764ba2 100%);
+            border-radius: 8px 8px 0 0;
+            min-width: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+
+        .chart-bar.happy {
+            background: linear-gradient(to top, #ffd700 0%, #ffb347 100%);
+        }
+
+        .chart-bar.neutral {
+            background: linear-gradient(to top, #87ceeb 0%, #4682b4 100%);
+        }
+
+        .chart-bar.sad {
+            background: linear-gradient(to top, #dda0dd 0%, #ba55d3 100%);
+        }
+
+        .chart-bar.empty {
+            background: #f0f0f0;
+        }
+
+        .chart-label {
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .stats-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 12px;
+            flex: 1;
+            min-width: 120px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .view-history-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 20px;
+            padding: 10px 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .view-history-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 情感陪伴小助手样式 */
+        .assistant-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .assistant-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .assistant-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .assistant-avatar.typing {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .assistant-chat-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            max-height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .assistant-chat-window.show {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-title {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .chat-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .chat-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 350px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .chat-message.assistant .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chat-message.user .message-avatar {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .chat-message.assistant .message-content {
+            background: #f0f0f0;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-family: inherit;
+            resize: none;
+            max-height: 100px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .api-config-btn {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .api-config-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .api-config-modal.show {
+            display: flex;
+        }
+
+        .api-config-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .api-config-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .api-option {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .api-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .api-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .api-option-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .api-option-desc {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .api-option.selected .api-input {
+            border-color: #667eea;
+        }
+
+        .api-option.selected .api-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 情感日记样式 */
+        .diary-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .diary-input-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .diary-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .diary-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .diary-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .diary-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .diary-btn.save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .diary-btn.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .diary-btn.cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .diary-btn.cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .diary-entry {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .diary-date {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .diary-content {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .diary-mood-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-right: 8px;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        /* 心情音乐推荐样式 */
+        .music-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .music-recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .music-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .music-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .music-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .music-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .music-description {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .music-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .music-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
+    <!-- 情感陪伴小助手 -->
+    <div class="assistant-container">
+        <div class="assistant-avatar" id="assistantAvatar" onclick="toggleChatWindow()">
+            🤗
+        </div>
+        <div class="assistant-chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-title">🤗 情感陪伴助手</div>
+                <button class="api-config-btn" onclick="showApiConfig()" title="API设置">⚙️</button>
+                <button class="chat-close-btn" onclick="closeChatWindow()">×</button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-container">
+                <textarea class="chat-input" id="chatInput" placeholder="输入消息..." rows="1" onkeydown="handleChatInputKey(event)"></textarea>
+                <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API配置弹窗 -->
+    <div class="api-config-modal" id="apiConfigModal" onclick="event.target === this && closeApiConfig()">
+        <div class="api-config-content">
+            <div class="api-config-title">⚙️ AI模型配置</div>
+            
+            <div class="api-option" onclick="selectApiOption('ollama')">
+                <div class="api-option-title">🖥️ Ollama (本地运行)</div>
+                <div class="api-option-desc">完全免费，数据不上传，需要在本地安装Ollama</div>
+                <input type="text" class="api-input" id="ollamaUrl" placeholder="API地址，如: http://localhost:11434/api/chat" value="http://localhost:11434/api/chat">
+                <input type="text" class="api-input" id="ollamaModel" placeholder="模型名称，如: llama3.2" value="llama3.2" style="margin-top: 10px;">
+            </div>
+
+            <div class="api-option" onclick="selectApiOption('huggingface')">
+                <div class="api-option-title">🤗 Hugging Face (在线) - 默认推荐</div>
+                <div class="api-option-desc">✨ 通过Git部署后，代理会自动处理API Key，无需手动配置！<br>💡 如需手动配置或使用自己的Token，可填写下方Access Token（可选）</div>
+                <div style="margin-bottom: 10px;">
+                    <a href="https://huggingface.co/settings/tokens" target="_blank" style="color: #667eea; text-decoration: none; font-size: 0.85em;">
+                        🔗 点击这里获取Hugging Face Access Token（免费，可选）
+                    </a>
+                </div>
+                <input type="text" class="api-input" id="hfApiKey" placeholder="（可选）粘贴你的Hugging Face Access Token（格式：hf_xxxxx）">
+                <input type="text" class="api-input" id="hfModel" placeholder="模型ID" value="meta-llama/Llama-3.2-3B-Instruct" style="margin-top: 10px;">
+            </div>
+
+            <div class="api-option" onclick="selectApiOption('groq')">
+                <div class="api-option-title">⚡ Groq (快速) - 默认推荐</div>
+                <div class="api-option-desc">响应快速，免费额度充足，需要API Key</div>
+                <div style="margin-bottom: 10px;">
+                    <a href="https://console.groq.com/keys" target="_blank" style="color: #667eea; text-decoration: none; font-size: 0.85em;">
+                        🔗 点击这里获取Groq API Key（免费）
+                    </a>
+                </div>
+                <input type="text" class="api-input" id="groqApiKey" placeholder="粘贴你的Groq API Key（格式：gsk_xxxxx）">
+                <input type="text" class="api-input" id="groqModel" placeholder="模型名称" value="llama-3.1-8b-instant" style="margin-top: 10px;">
+            </div>
+
+            <div class="api-option" onclick="selectApiOption('openai')">
+                <div class="api-option-title">🔷 OpenAI (需付费)</div>
+                <div class="api-option-desc">高质量，需要API Key和付费</div>
+                <input type="text" class="api-input" id="openaiApiKey" placeholder="OpenAI API Key">
+                <input type="text" class="api-input" id="openaiModel" placeholder="模型名称，如: gpt-3.5-turbo" value="gpt-3.5-turbo" style="margin-top: 10px;">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="diary-btn save" onclick="saveApiConfig()" style="flex: 1;">💾 保存配置</button>
+                <button class="diary-btn cancel" onclick="closeApiConfig()" style="flex: 1;">取消</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>✨ 今日心情打卡 ✨</h1>
+        
+        <!-- 打卡提醒 -->
+        <div id="checkinReminder" class="checkin-reminder"></div>
         
         <!-- 心情选择界面 -->
         <div id="moodSelection" class="mood-selection">
@@ -353,7 +1092,502 @@
         <div class="message-container">
             <div id="message" class="message"></div>
         </div>
+
+        <!-- 情感日记功能 -->
+        <div id="diarySection" class="diary-section" style="display: none;">
+            <div class="history-title">📝 记录今天的心情</div>
+            <div class="diary-input-container">
+                <textarea id="diaryTextarea" class="diary-textarea" placeholder="写下今天的心情、想法或感受吧..."></textarea>
+                <div class="diary-buttons">
+                    <button class="diary-btn save" onclick="saveDiary()">💾 保存日记</button>
+                    <button class="diary-btn cancel" onclick="cancelDiary()">取消</button>
+                </div>
+            </div>
+            <div id="diaryEntries" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- 心情音乐推荐 -->
+        <div id="musicSection" class="music-section" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div class="history-title" style="margin: 0;">🎵 为你推荐音乐</div>
+                <button class="back-btn" onclick="hideMusicRecommendations()" style="margin: 0; padding: 8px 15px; font-size: 0.85em;">关闭</button>
+            </div>
+            <div id="musicRecommendations" class="music-recommendations"></div>
+        </div>
+
+        <!-- 心情历史记录 -->
+        <div id="historySection" class="history-section" style="display: none;">
+            <div class="history-title">📊 最近7天心情记录</div>
+            <div class="chart-container">
+                <div id="chartBars" class="chart-bars"></div>
+                <div id="chartLabels" style="display: flex; justify-content: space-around; margin-top: 8px;"></div>
+            </div>
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div id="happyStat" class="stat-value">0</div>
+                    <div class="stat-label">😊 开心</div>
+                </div>
+                <div class="stat-item">
+                    <div id="neutralStat" class="stat-value">0</div>
+                    <div class="stat-label">😐 一般</div>
+                </div>
+                <div class="stat-item">
+                    <div id="sadStat" class="stat-value">0</div>
+                    <div class="stat-label">😢 难过</div>
+                </div>
+            </div>
+            <button class="view-history-btn" onclick="toggleHistory()">隐藏历史记录</button>
+        </div>
     </div>
+
+    <script>
+        // 数据存储和管理
+        const Storage = {
+            getMoodHistory: () => {
+                const history = localStorage.getItem('moodHistory');
+                return history ? JSON.parse(history) : [];
+            },
+            saveMoodHistory: (history) => {
+                localStorage.setItem('moodHistory', JSON.stringify(history));
+            },
+            getLastCheckinDate: () => {
+                return localStorage.getItem('lastCheckinDate');
+            },
+            setLastCheckinDate: (date) => {
+                localStorage.setItem('lastCheckinDate', date);
+            },
+            getStreak: () => {
+                return parseInt(localStorage.getItem('checkinStreak') || '0');
+            },
+            setStreak: (streak) => {
+                localStorage.setItem('checkinStreak', streak.toString());
+            },
+            getDiaries: () => {
+                const diaries = localStorage.getItem('diaries');
+                return diaries ? JSON.parse(diaries) : [];
+            },
+            saveDiaries: (diaries) => {
+                localStorage.setItem('diaries', JSON.stringify(diaries));
+            },
+            getCurrentMood: () => {
+                return localStorage.getItem('currentMood');
+            },
+            setCurrentMood: (mood) => {
+                localStorage.setItem('currentMood', mood);
+            }
+        };
+
+        // 获取今天的日期字符串 (YYYY-MM-DD)
+        function getTodayString() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        // 检查今天是否已打卡
+        function hasCheckedInToday() {
+            return Storage.getLastCheckinDate() === getTodayString();
+        }
+
+        // 更新连续打卡天数
+        function updateStreak() {
+            const lastDate = Storage.getLastCheckinDate();
+            const today = getTodayString();
+            let streak = Storage.getStreak();
+
+            if (!lastDate) {
+                // 第一次打卡
+                streak = 1;
+            } else {
+                const lastDateObj = new Date(lastDate);
+                const todayObj = new Date(today);
+                const diffDays = Math.floor((todayObj - lastDateObj) / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 0) {
+                    // 同一天，不增加
+                } else if (diffDays === 1) {
+                    // 连续打卡
+                    streak += 1;
+                } else {
+                    // 中断了，重置
+                    streak = 1;
+                }
+            }
+
+            Storage.setStreak(streak);
+            Storage.setLastCheckinDate(today);
+            return streak;
+        }
+
+        // 保存心情记录
+        function saveMoodRecord(mood, reason = null) {
+            const history = Storage.getMoodHistory();
+            const today = getTodayString();
+            
+            // 检查今天是否已有记录，如果有则更新
+            const todayIndex = history.findIndex(record => record.date === today);
+            const record = {
+                date: today,
+                mood: mood,
+                reason: reason,
+                timestamp: new Date().getTime()
+            };
+
+            if (todayIndex >= 0) {
+                history[todayIndex] = record;
+            } else {
+                history.push(record);
+            }
+
+            // 只保留最近30天的记录
+            const recentHistory = history.slice(-30);
+            Storage.saveMoodHistory(recentHistory);
+        }
+
+        // 显示打卡提醒
+        function showCheckinReminder() {
+            const reminder = document.getElementById('checkinReminder');
+            const hasCheckedIn = hasCheckedInToday();
+            const streak = Storage.getStreak();
+
+            if (hasCheckedIn) {
+                reminder.className = 'checkin-reminder completed';
+                reminder.innerHTML = `
+                    ✅ 今日已打卡完成！
+                    <div class="streak-info">🔥 连续打卡 ${streak} 天</div>
+                `;
+            } else {
+                reminder.className = 'checkin-reminder';
+                const lastDate = Storage.getLastCheckinDate();
+                if (lastDate && streak > 0) {
+                    reminder.innerHTML = `
+                        📝 今天还没打卡哦～快来记录你的心情吧！
+                        <div class="streak-info">🔥 当前连续打卡 ${streak} 天，不要中断哦～</div>
+                    `;
+                } else {
+                    reminder.innerHTML = `
+                        📝 今天还没打卡哦～快来记录你的心情吧！
+                        <div class="streak-info">开始你的心情打卡之旅吧！</div>
+                    `;
+                }
+            }
+        }
+
+        // 渲染心情历史图表
+        function renderHistoryChart() {
+            const history = Storage.getMoodHistory();
+            const chartBars = document.getElementById('chartBars');
+            const chartLabels = document.getElementById('chartLabels');
+            
+            // 获取最近7天的数据
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                const record = history.find(r => r.date === dateStr);
+                last7Days.push({
+                    date: dateStr,
+                    mood: record ? record.mood : null,
+                    displayDate: `${date.getMonth() + 1}/${date.getDate()}`
+                });
+            }
+
+            // 计算最大高度（用于归一化）
+            const moodValues = { happy: 3, neutral: 2, sad: 1 };
+            const maxValue = 3;
+
+            // 清空图表
+            chartBars.innerHTML = '';
+            chartLabels.innerHTML = '';
+
+            // 渲染柱状图
+            last7Days.forEach(day => {
+                const bar = document.createElement('div');
+                const label = document.createElement('div');
+                
+                if (day.mood) {
+                    const value = moodValues[day.mood];
+                    const height = (value / maxValue) * 100;
+                    bar.className = `chart-bar ${day.mood}`;
+                    bar.style.height = `${height}%`;
+                    bar.title = `${day.displayDate}: ${day.mood === 'happy' ? '开心' : day.mood === 'neutral' ? '一般' : '难过'}`;
+                } else {
+                    bar.className = 'chart-bar empty';
+                    bar.style.height = '10%';
+                    bar.title = `${day.displayDate}: 未打卡`;
+                }
+                
+                label.className = 'chart-label';
+                label.textContent = day.displayDate;
+                
+                chartBars.appendChild(bar);
+                chartLabels.appendChild(label);
+            });
+
+            // 更新统计
+            updateStats(history);
+        }
+
+        // 更新统计数据
+        function updateStats(history) {
+            const last7Days = history.slice(-7);
+            const stats = {
+                happy: last7Days.filter(r => r.mood === 'happy').length,
+                neutral: last7Days.filter(r => r.mood === 'neutral').length,
+                sad: last7Days.filter(r => r.mood === 'sad').length
+            };
+
+            document.getElementById('happyStat').textContent = stats.happy;
+            document.getElementById('neutralStat').textContent = stats.neutral;
+            document.getElementById('sadStat').textContent = stats.sad;
+        }
+
+        // 切换历史记录显示
+        function toggleHistory() {
+            const historySection = document.getElementById('historySection');
+            const btn = event.target;
+            const allViewBtns = document.querySelectorAll('.view-history-btn');
+            
+            if (historySection.style.display === 'none' || historySection.style.display === '') {
+                historySection.style.display = 'block';
+                renderHistoryChart();
+                // 更新所有查看按钮的文本
+                allViewBtns.forEach(b => {
+                    if (!b.closest('.history-section')) {
+                        b.textContent = '隐藏历史记录';
+                    }
+                });
+            } else {
+                historySection.style.display = 'none';
+                // 更新所有查看按钮的文本
+                allViewBtns.forEach(b => {
+                    if (!b.closest('.history-section')) {
+                        b.textContent = '📊 查看历史记录';
+                    }
+                });
+            }
+        }
+
+        // ========== 情感日记功能 ==========
+        function showDiarySection() {
+            const diarySection = document.getElementById('diarySection');
+            diarySection.style.display = 'block';
+            document.getElementById('diaryTextarea').focus();
+            loadDiaryEntries();
+        }
+
+        function hideDiarySection() {
+            const diarySection = document.getElementById('diarySection');
+            diarySection.style.display = 'none';
+            document.getElementById('diaryTextarea').value = '';
+        }
+
+        function saveDiary() {
+            const content = document.getElementById('diaryTextarea').value.trim();
+            if (!content) {
+                alert('请输入日记内容～');
+                return;
+            }
+
+            const diaries = Storage.getDiaries();
+            const today = getTodayString();
+            const currentMood = Storage.getCurrentMood() || 'unknown';
+
+            const diary = {
+                date: today,
+                content: content,
+                mood: currentMood,
+                timestamp: new Date().getTime()
+            };
+
+            // 检查今天是否已有日记，如果有则更新
+            const todayIndex = diaries.findIndex(d => d.date === today);
+            if (todayIndex >= 0) {
+                diaries[todayIndex] = diary;
+            } else {
+                diaries.push(diary);
+            }
+
+            // 只保留最近30天的日记
+            const recentDiaries = diaries.slice(-30);
+            Storage.saveDiaries(recentDiaries);
+
+            hideDiarySection();
+            loadDiaryEntries();
+            
+            // 显示成功提示
+            const messageElement = document.getElementById('message');
+            messageElement.classList.remove('show');
+            setTimeout(() => {
+                messageElement.textContent = '💾 日记已保存！你的心情记录下来了～';
+                messageElement.classList.add('show');
+            }, 50);
+        }
+
+        function cancelDiary() {
+            hideDiarySection();
+        }
+
+        function loadDiaryEntries() {
+            const diaries = Storage.getDiaries();
+            const entriesContainer = document.getElementById('diaryEntries');
+            
+            if (diaries.length === 0) {
+                entriesContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">还没有日记记录，开始记录你的心情吧～</p>';
+                return;
+            }
+
+            // 显示最近7天的日记
+            const recentDiaries = diaries.slice(-7).reverse();
+            entriesContainer.innerHTML = recentDiaries.map(diary => {
+                const date = new Date(diary.timestamp);
+                const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+                const moodEmoji = diary.mood === 'happy' ? '😊' : diary.mood === 'neutral' ? '😐' : diary.mood === 'sad' ? '😢' : '💭';
+                const moodText = diary.mood === 'happy' ? '开心' : diary.mood === 'neutral' ? '一般' : diary.mood === 'sad' ? '难过' : '未知';
+                
+                return `
+                    <div class="diary-entry">
+                        <div class="diary-date">
+                            <span class="diary-mood-tag">${moodEmoji} ${moodText}</span>
+                            ${dateStr}
+                        </div>
+                        <div class="diary-content">${diary.content}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== 心情音乐推荐 ==========
+        const MusicRecommendations = {
+            happy: [
+                { icon: '🎵', title: '轻快流行', description: '节奏明快的流行音乐', search: '轻快流行音乐' },
+                { icon: '🎸', title: '摇滚能量', description: '充满活力的摇滚歌曲', search: '摇滚音乐' },
+                { icon: '🎹', title: '电子舞曲', description: '动感十足的电子音乐', search: '电子舞曲' },
+                { icon: '🎤', title: '快乐民谣', description: '轻松愉快的民谣歌曲', search: '快乐民谣' }
+            ],
+            neutral: [
+                { icon: '🎼', title: '轻音乐', description: '舒缓放松的纯音乐', search: '轻音乐 纯音乐' },
+                { icon: '🎧', title: '爵士乐', description: '优雅的爵士旋律', search: '爵士音乐' },
+                { icon: '🎹', title: '钢琴曲', description: '宁静的钢琴独奏', search: '钢琴曲' },
+                { icon: '🌊', title: '自然声音', description: '大自然的声音疗愈', search: '自然声音 白噪音' }
+            ],
+            sad: [
+                { icon: '🎻', title: '治愈系', description: '温暖治愈的音乐', search: '治愈系音乐' },
+                { icon: '🎵', title: '抒情歌曲', description: '情感丰富的抒情音乐', search: '抒情歌曲' },
+                { icon: '🎹', title: '轻音乐', description: '平静心灵的纯音乐', search: '轻音乐 放松' },
+                { icon: '🌙', title: '夜晚音乐', description: '适合夜晚的安静音乐', search: '夜晚音乐 安静' }
+            ]
+        };
+
+        function showMusicRecommendations(mood) {
+            const musicSection = document.getElementById('musicSection');
+            const recommendations = MusicRecommendations[mood] || MusicRecommendations.neutral;
+            const container = document.getElementById('musicRecommendations');
+
+            container.innerHTML = recommendations.map(music => {
+                // 使用网易云音乐搜索链接
+                const searchUrl = `https://music.163.com/#/search/m/?s=${encodeURIComponent(music.search)}`;
+                return `
+                    <div class="music-card" onclick="window.open('${searchUrl}', '_blank')">
+                        <div class="music-icon">${music.icon}</div>
+                        <div class="music-title">${music.title}</div>
+                        <div class="music-description">${music.description}</div>
+                        <a href="${searchUrl}" target="_blank" class="music-link" onclick="event.stopPropagation()">🎵 去听听</a>
+                    </div>
+                `;
+            }).join('');
+
+            musicSection.style.display = 'block';
+            
+            // 滚动到音乐推荐区域
+            setTimeout(() => {
+                musicSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function hideMusicRecommendations() {
+            const musicSection = document.getElementById('musicSection');
+            musicSection.style.display = 'none';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showCheckinReminder();
+            
+            // 初始化情感陪伴小助手（AI聊天版）
+            Assistant.init();
+            
+            // 初始化API配置（默认使用Hugging Face，通过代理无需API Key）
+            const config = Assistant.getApiConfig();
+            // 如果provider不是huggingface，或者之前配置的是groq但没有apiKey，强制使用huggingface
+            if (!config.provider || config.provider === 'groq' || (config.provider !== 'huggingface' && !config[config.provider]?.apiKey)) {
+                config.provider = 'huggingface';
+                // 确保huggingface配置存在
+                if (!config.huggingface) {
+                    config.huggingface = { apiKey: '', model: 'meta-llama/Llama-3.2-3B-Instruct' };
+                }
+                Assistant.saveApiConfig(config);
+            }
+
+            // 添加欢迎消息到聊天窗口（如果聊天历史为空）
+            const chatMessages = document.getElementById('chatMessages');
+            if (Assistant.chatHistory.length === 0 && chatMessages) {
+                const greeting = Assistant.getGreeting();
+                const welcomeMsg = `${greeting}\n\n我是你的AI情感陪伴助手，使用Hugging Face AI（免费）\n\n✨ 通过Git部署后，我已自动配置好，可以直接开始聊天！\n\n可以直接和我聊聊你的心情、烦恼或任何想说的话～\n\n💡 提示：点击右上角⚙️可以切换AI模型或手动配置API Key`;
+                addMessageToChat('assistant', welcomeMsg, false);
+            }
+            
+            // 始终显示历史记录按钮（即使没有历史记录）
+            const historySection = document.getElementById('historySection');
+            historySection.style.display = 'none';
+            
+            // 检查是否已有查看按钮，避免重复添加
+            let viewBtn = document.querySelector('.view-history-btn');
+            if (!viewBtn || viewBtn.closest('.history-section')) {
+                viewBtn = document.createElement('button');
+                viewBtn.className = 'view-history-btn';
+                viewBtn.textContent = '📊 查看历史记录';
+                viewBtn.onclick = toggleHistory;
+                viewBtn.style.marginTop = '20px';
+                viewBtn.style.marginBottom = '10px';
+                document.querySelector('.message-container').appendChild(viewBtn);
+            }
+
+            // 添加日记和音乐按钮
+            const actionButtons = document.createElement('div');
+            actionButtons.style.display = 'flex';
+            actionButtons.style.gap = '10px';
+            actionButtons.style.marginTop = '15px';
+            actionButtons.style.justifyContent = 'center';
+            actionButtons.style.flexWrap = 'wrap';
+            
+            const diaryBtn = document.createElement('button');
+            diaryBtn.className = 'view-history-btn';
+            diaryBtn.textContent = '📝 写日记';
+            diaryBtn.onclick = showDiarySection;
+            actionButtons.appendChild(diaryBtn);
+
+            const musicBtn = document.createElement('button');
+            musicBtn.className = 'view-history-btn';
+            musicBtn.textContent = '🎵 音乐推荐';
+            musicBtn.onclick = () => {
+                const currentMood = Storage.getCurrentMood();
+                if (!currentMood) {
+                    const messageElement = document.getElementById('message');
+                    messageElement.classList.remove('show');
+                    setTimeout(() => {
+                        messageElement.textContent = '💡 先选择一下今天的心情，我再为你推荐合适的音乐～';
+                        messageElement.classList.add('show');
+                    }, 50);
+                    return;
+                }
+                showMusicRecommendations(currentMood);
+            };
+            actionButtons.appendChild(musicBtn);
+
+            document.querySelector('.message-container').appendChild(actionButtons);
+        });
+    </script>
 
     <script>
         const moodButtons = document.querySelectorAll('.mood-btn');
@@ -363,25 +1597,58 @@
         const reasonButtons = document.querySelectorAll('.reason-btn');
         const backToMoodBtn = document.getElementById('backToMood');
         
-        // 不同心情对应的鼓励话语
+        // 不同心情对应的鼓励话语（已扩充）
         const messages = {
             happy: [
                 '🌟 太棒了！保持这份好心情，让快乐延续一整天！',
                 '💫 你的笑容是最美的风景，继续保持哦～',
                 '✨ 开心是最好的良药，愿你的每一天都充满阳光！',
-                '🎉 看到你这么开心，世界都变得更美好了呢！'
+                '🎉 看到你这么开心，世界都变得更美好了呢！',
+                '🌞 快乐是会传染的，你的好心情会让周围的人都感到温暖！',
+                '💐 保持这份积极的心态，好事会接踵而来的～',
+                '🎈 今天是个好日子，好好享受这份快乐吧！',
+                '🌈 你的正能量就像彩虹一样美丽，继续发光发热！',
+                '🌸 开心的时候，记得把这份美好分享给身边的人哦',
+                '💝 看到你开心，我也为你感到高兴！继续保持～',
+                '🎊 快乐是生活最好的调味剂，愿你每天都这么开心！',
+                '🌻 像向日葵一样，永远面向阳光，保持微笑！',
+                '⭐ 你的快乐就是最亮的星，照亮自己，也温暖他人',
+                '🎁 每一天都是礼物，开心地打开它吧！',
+                '💖 保持这份好心情，让每一天都充满希望和快乐！'
             ],
             neutral: [
                 '🌤️ 平淡也是一种美好，享受当下的宁静吧～',
                 '💭 有时候，平静的心境就是最好的状态',
                 '🌸 平凡的日子里也有小确幸，慢慢感受生活的美好',
-                '☁️ 不悲不喜，保持内心的平衡，这就是智慧'
+                '☁️ 不悲不喜，保持内心的平衡，这就是智慧',
+                '🌿 平静如水的心境，也是一种难得的幸福',
+                '🍃 平淡的日子里，藏着生活的真谛',
+                '🌙 不骄不躁，保持内心的平和，这就是最好的状态',
+                '💧 平静的心湖，能映照出最美的风景',
+                '🌾 平凡的日子，也有它独特的韵味',
+                '🕊️ 内心的平静，是最大的财富',
+                '🌊 像大海一样，表面平静，内心深邃',
+                '🍵 平淡如茶，细细品味，自有甘甜',
+                '🌌 平静的夜晚，也有星星在闪烁',
+                '🎋 平凡的生活，也能开出美丽的花',
+                '🧘 保持内心的平衡，就是最好的修行'
             ],
             sad: [
                 '💙 难过的时候，记得给自己一个温暖的拥抱',
                 '🌈 风雨过后总会有彩虹，相信明天会更好',
                 '🤗 每个人都会有低谷，但你不是一个人在战斗',
-                '🌙 难过是暂时的，你比想象中更坚强，加油！'
+                '🌙 难过是暂时的，你比想象中更坚强，加油！',
+                '💜 你的感受是真实的，也是重要的，允许自己难过',
+                '🦋 就像蝴蝶破茧，痛苦之后是美丽的蜕变',
+                '🌱 低谷是成长的土壤，你会变得更强大',
+                '💪 难过不会永远持续，你比想象中更坚韧',
+                '🤝 记得，你并不孤单，有人在乎你，关心你',
+                '🌅 即使是最黑暗的夜晚，黎明也会到来',
+                '💐 给自己一些时间，慢慢疗愈，慢慢恢复',
+                '🎭 难过是情绪的一部分，接受它，然后继续前行',
+                '🌊 就像海浪，有起有落，但大海依然在那里',
+                '🕯️ 即使在黑暗中，也要相信光明的存在',
+                '💚 你的价值不会因为一时的难过而减少，你依然很棒'
             ]
         };
 
@@ -438,17 +1705,777 @@
                     messageElement.textContent = '';
                 } else {
                     // 其他心情直接显示鼓励话语
-                    const moodMessages = messages[mood];
-                    const randomMessage = moodMessages[Math.floor(Math.random() * moodMessages.length)];
-                    
-                    messageElement.classList.remove('show');
-                    setTimeout(() => {
-                        messageElement.textContent = randomMessage;
-                        messageElement.classList.add('show');
-                    }, 50);
+                    handleMoodSelection(mood, null);
                 }
             });
         });
+
+        // 处理心情选择（保存记录、更新打卡、显示消息）
+        function handleMoodSelection(mood, reason) {
+            // 保存心情记录
+            saveMoodRecord(mood, reason);
+            
+            // 保存当前心情（用于日记和音乐推荐）
+            Storage.setCurrentMood(mood);
+            
+            // 更新打卡天数
+            const newStreak = updateStreak();
+            
+            // 更新打卡提醒
+            showCheckinReminder();
+            
+            // 确保历史记录按钮存在
+            ensureHistoryButton();
+            
+            // 显示鼓励话语
+            const moodMessages = messages[mood];
+            const randomMessage = moodMessages[Math.floor(Math.random() * moodMessages.length)];
+            
+            messageElement.classList.remove('show');
+            setTimeout(() => {
+                messageElement.textContent = randomMessage;
+                messageElement.classList.add('show');
+            }, 50);
+
+            // 自动显示音乐推荐
+            setTimeout(() => {
+                showMusicRecommendations(mood);
+            }, 800);
+
+            // 如果有历史记录区域，更新图表
+            const historySection = document.getElementById('historySection');
+            if (historySection && historySection.style.display !== 'none') {
+                renderHistoryChart();
+            }
+        }
+
+        // 确保历史记录按钮存在
+        function ensureHistoryButton() {
+            let viewBtn = document.querySelector('.view-history-btn');
+            if (!viewBtn || viewBtn.closest('.history-section')) {
+                viewBtn = document.createElement('button');
+                viewBtn.className = 'view-history-btn';
+                viewBtn.textContent = '📊 查看历史记录';
+                viewBtn.onclick = toggleHistory;
+                viewBtn.style.marginTop = '20px';
+                viewBtn.style.marginBottom = '10px';
+                document.querySelector('.message-container').appendChild(viewBtn);
+            }
+        }
+
+        // ========== 情感陪伴小助手 (AI聊天版) ==========
+        const Assistant = {
+            messages: {
+                morning: [
+                    '🌅 早上好！新的一天开始了，希望你今天心情愉快～',
+                    '☀️ 早安！记得给自己一个微笑，今天会是美好的一天！',
+                    '🌞 早上好！无论今天遇到什么，都要保持好心情哦～'
+                ],
+                afternoon: [
+                    '🌤️ 下午好！今天过得怎么样？记得适当休息一下～',
+                    '☕ 下午时光，来杯茶，放松一下心情吧～',
+                    '💼 下午好！工作学习之余，别忘了照顾好自己的心情～'
+                ],
+                evening: [
+                    '🌙 晚上好！今天辛苦了，好好放松一下吧～',
+                    '⭐ 夜晚来临，回顾今天，记得给自己一些鼓励～',
+                    '🌃 晚上好！今天的心情如何？有什么想分享的吗？'
+                ],
+                general: [
+                    '💙 我在这里陪伴你，无论开心还是难过～',
+                    '🤗 记得，你的感受很重要，我理解你～',
+                    '🌈 生活有起有落，但你不是一个人在面对～',
+                    '💪 你已经做得很好了，继续保持～',
+                    '🌸 每一天都是新的开始，加油！'
+                ]
+            },
+
+            getGreeting: () => {
+                const hour = new Date().getHours();
+                let timeOfDay;
+                if (hour >= 6 && hour < 12) {
+                    timeOfDay = 'morning';
+                } else if (hour >= 12 && hour < 18) {
+                    timeOfDay = 'afternoon';
+                } else {
+                    timeOfDay = 'evening';
+                }
+                const greetings = Assistant.messages[timeOfDay];
+                return greetings[Math.floor(Math.random() * greetings.length)];
+            },
+
+            chatHistory: [],
+
+            getApiConfig: () => {
+                const config = localStorage.getItem('aiApiConfig');
+                return config ? JSON.parse(config) : {
+                    provider: 'huggingface',
+                    ollama: { url: 'http://localhost:11434/api/chat', model: 'llama3.2' },
+                    huggingface: { apiKey: '', model: 'meta-llama/Llama-3.2-3B-Instruct' },
+                    groq: { apiKey: '', model: 'llama-3.1-8b-instant' },
+                    openai: { apiKey: '', model: 'gpt-3.5-turbo' }
+                };
+            },
+
+            saveApiConfig: (config) => {
+                localStorage.setItem('aiApiConfig', JSON.stringify(config));
+            },
+
+            getSystemPrompt: () => {
+                const currentMood = Storage.getCurrentMood();
+                const moodText = currentMood === 'happy' ? '开心' : currentMood === 'neutral' ? '一般' : currentMood === 'sad' ? '难过' : '未知';
+                return `你是一个温暖、贴心的情感陪伴助手。用户当前心情是${moodText}。请用温暖、理解、支持的语气与用户对话，帮助用户表达情感、缓解压力、提供建议。保持简洁、自然的对话风格，每次回复控制在100字以内。`;
+            },
+
+            async callAI(message) {
+                const config = Assistant.getApiConfig();
+                const systemPrompt = Assistant.getSystemPrompt();
+
+                // 调试信息：检查配置
+                console.log('当前配置:', {
+                    provider: config.provider,
+                    hasApiKey: !!(config.huggingface && config.huggingface.apiKey),
+                    apiKeyLength: config.huggingface?.apiKey?.length || 0,
+                    apiKeyPrefix: config.huggingface?.apiKey?.substring(0, 3) || 'none'
+                });
+
+                try {
+                    switch (config.provider) {
+                        case 'ollama':
+                            return await Assistant.callOllama(message, systemPrompt, config.ollama);
+                        case 'huggingface':
+                            return await Assistant.callHuggingFace(message, systemPrompt, config.huggingface);
+                        case 'groq':
+                            return await Assistant.callGroq(message, systemPrompt, config.groq);
+                        case 'openai':
+                            return await Assistant.callOpenAI(message, systemPrompt, config.openai);
+                        default:
+                            throw new Error('未配置AI模型');
+                    }
+                } catch (error) {
+                    console.error('AI调用错误:', error);
+                    throw error;
+                }
+            },
+
+            async callOllama(message, systemPrompt, config) {
+                const response = await fetch(config.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: config.model,
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            ...Assistant.chatHistory.slice(-10),
+                            { role: 'user', content: message }
+                        ],
+                        stream: false
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ollama API错误: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data.message.content;
+            },
+
+            async callHuggingFace(message, systemPrompt, config) {
+                // 优先使用Netlify Function代理（所有用户无需配置API Key）
+                try {
+                    const functionUrl = '/.netlify/functions/huggingface-proxy';
+                    const response = await fetch(functionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messages: [
+                                ...Assistant.chatHistory.slice(-10).map(msg => ({
+                                    role: msg.role,
+                                    content: msg.content
+                                })),
+                                { role: 'user', content: message }
+                            ],
+                            systemPrompt: systemPrompt,
+                            // 如果用户配置了Token，也传递给代理（作为备用，如果环境变量未配置）
+                            apiKey: config.apiKey && config.apiKey.trim() ? config.apiKey : undefined
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorData;
+                        try {
+                            errorData = JSON.parse(errorText);
+                        } catch {
+                            errorData = { error: errorText };
+                        }
+                        
+                        // 如果代理未配置（404或500），回退到直接调用（如果用户配置了API Key）
+                        if (response.status === 404 || (response.status === 500 && (errorData.error && errorData.error.includes('not configured')))) {
+                            if (config.apiKey && config.apiKey.trim()) {
+                                console.log('代理未配置，使用直接调用模式');
+                                return await this.callHuggingFaceDirect(message, systemPrompt, config);
+                            }
+                            throw new Error('PROXY_NOT_CONFIGURED');
+                        }
+                        throw new Error(`代理服务错误: ${errorData.error || response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    return data.content;
+                } catch (error) {
+                    // 如果代理失败（404或网络错误），尝试直接调用（如果用户配置了API Key作为备用）
+                    if ((error.message === 'PROXY_NOT_CONFIGURED' || error.message.includes('Failed to fetch') || error.message.includes('404')) && config.apiKey && config.apiKey.trim()) {
+                        try {
+                            console.log('代理不可用，使用直接调用模式:', error.message);
+                            return await this.callHuggingFaceDirect(message, systemPrompt, config);
+                        } catch (directError) {
+                            // 如果直接调用也失败，抛出直接调用的错误（包含更详细的API错误信息）
+                            console.error('直接调用也失败:', directError);
+                            throw directError;
+                        }
+                    }
+                    
+                    // 如果代理失败且没有API Key，抛出友好错误
+                    if (error.message === 'PROXY_NOT_CONFIGURED' || error.message.includes('Failed to fetch') || error.message.includes('404')) {
+                        throw new Error('PROXY_NOT_CONFIGURED');
+                    }
+                    throw error;
+                }
+            },
+
+            async callHuggingFaceDirect(message, systemPrompt, config) {
+                if (!config.apiKey) {
+                    throw new Error('请配置Hugging Face API Key');
+                }
+
+                console.log('开始直接调用Hugging Face API，模型:', config.model);
+
+                try {
+                    // 使用新的 router.huggingface.co API（OpenAI兼容格式）
+                    // 注意：直接调用会有CORS问题，应该优先使用代理
+                    const messages = [
+                        ...Assistant.chatHistory.slice(-10).map(msg => ({
+                            role: msg.role === 'system' ? 'system' : msg.role === 'user' ? 'user' : 'assistant',
+                            content: msg.content
+                        })),
+                        { role: 'user', content: message }
+                    ];
+                    
+                    // 如果有 systemPrompt，添加到消息列表开头
+                    if (systemPrompt) {
+                        messages.unshift({
+                            role: 'system',
+                            content: systemPrompt
+                        });
+                    }
+                    
+                    const response = await fetch(`https://router.huggingface.co/v1/chat/completions`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${config.apiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: config.model,
+                            messages: messages,
+                            max_tokens: 150,
+                            temperature: 0.7
+                        })
+                    });
+
+                    console.log('API响应状态:', response.status, response.statusText);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorMessage = `Hugging Face API错误 (${response.status}): `;
+                        
+                        try {
+                            const errorData = JSON.parse(errorText);
+                            errorMessage += errorData.error || JSON.stringify(errorData) || errorText;
+                            console.error('API错误详情:', errorData);
+                        } catch {
+                            errorMessage += errorText || response.statusText;
+                            console.error('API错误文本:', errorText);
+                        }
+                        
+                        // 根据状态码提供更具体的错误信息
+                        if (response.status === 401 || response.status === 403) {
+                            errorMessage += '\n\n💡 Token可能无效或已过期，请检查：\n1. Token格式是否正确（应以hf_开头）\n2. Token是否已过期\n3. Token权限是否足够（需要read权限）\n4. 确认Token没有多余的空格';
+                        } else if (response.status === 503) {
+                            errorMessage += '\n\n💡 模型可能正在加载，请等待30秒后重试';
+                        } else if (response.status === 429) {
+                            errorMessage += '\n\n💡 API调用频率过高，请稍后重试';
+                        }
+                        
+                        throw new Error(`Hugging Face API错误: ${errorMessage}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('API响应数据:', data);
+                    
+                    // 处理新的 router API 返回格式（OpenAI兼容）
+                    let generatedText = '';
+                    
+                    if (data.choices && data.choices.length > 0) {
+                        // OpenAI 兼容格式: { choices: [{ message: { content: "..." } }] }
+                        generatedText = data.choices[0]?.message?.content || '';
+                    } else if (data.content) {
+                        // 直接 content 字段
+                        generatedText = data.content;
+                    } else if (Array.isArray(data)) {
+                        // 旧格式（数组）
+                        generatedText = data[0]?.generated_text || '';
+                    } else if (data.generated_text) {
+                        // 旧格式（对象）
+                        generatedText = data.generated_text;
+                    } else if (typeof data === 'string') {
+                        generatedText = data;
+                    }
+                    
+                    // 清理文本
+                    generatedText = generatedText.trim();
+                    
+                    return generatedText || '抱歉，我暂时无法理解，能再说一遍吗？';
+                } catch (fetchError) {
+                    // 捕获网络错误或其他fetch错误
+                    console.error('Fetch错误:', fetchError);
+                    if (fetchError.message && fetchError.message.includes('Hugging Face API错误')) {
+                        // 如果是API错误，直接抛出
+                        throw fetchError;
+                    }
+                    // 网络错误
+                    throw new Error(`网络连接错误: ${fetchError.message || '无法连接到Hugging Face API，请检查网络连接'}`);
+                }
+            },
+
+            async callGroq(message, systemPrompt, config) {
+                // 优先使用Netlify Function代理（无需用户配置API Key）
+                try {
+                    const functionUrl = '/.netlify/functions/groq-proxy';
+                    const response = await fetch(functionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messages: [
+                                ...Assistant.chatHistory.slice(-10).map(msg => ({
+                                    role: msg.role,
+                                    content: msg.content
+                                })),
+                                { role: 'user', content: message }
+                            ],
+                            systemPrompt: systemPrompt
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorData;
+                        try {
+                            errorData = JSON.parse(errorText);
+                        } catch {
+                            errorData = { error: errorText };
+                        }
+                        
+                        // 如果代理未配置，回退到直接调用（如果用户配置了API Key）
+                        if (response.status === 500 && (errorData.error && errorData.error.includes('not configured') || errorText.includes('not configured'))) {
+                            if (config.apiKey && config.apiKey.trim()) {
+                                console.log('代理未配置，使用直接调用模式');
+                                return await this.callGroqDirect(message, systemPrompt, config);
+                            }
+                            throw new Error('PROXY_NOT_CONFIGURED');
+                        }
+                        throw new Error(`代理服务错误: ${errorData.error || response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    return data.content;
+                } catch (error) {
+                    // 如果代理失败，尝试直接调用（如果用户配置了API Key作为备用）
+                    if (error.message !== 'PROXY_NOT_CONFIGURED' && config.apiKey && config.apiKey.trim()) {
+                        try {
+                            console.log('代理失败，尝试直接调用:', error.message);
+                            return await this.callGroqDirect(message, systemPrompt, config);
+                        } catch (directError) {
+                            // 如果直接调用也失败，抛出原始错误
+                            throw error;
+                        }
+                    }
+                    
+                    // 如果代理失败且没有API Key，抛出友好错误
+                    if (error.message === 'PROXY_NOT_CONFIGURED' || error.message.includes('Failed to fetch')) {
+                        throw new Error('PROXY_NOT_CONFIGURED');
+                    }
+                    throw error;
+                }
+            },
+
+            async callGroqDirect(message, systemPrompt, config) {
+                if (!config.apiKey) {
+                    throw new Error('请配置Groq API Key');
+                }
+
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${config.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: config.model,
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            ...Assistant.chatHistory.slice(-10),
+                            { role: 'user', content: message }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 200
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Groq API错误: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            },
+
+            async callOpenAI(message, systemPrompt, config) {
+                if (!config.apiKey) {
+                    throw new Error('请配置OpenAI API Key');
+                }
+
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${config.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: config.model,
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            ...Assistant.chatHistory.slice(-10),
+                            { role: 'user', content: message }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 200
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`OpenAI API错误: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            },
+
+            init: () => {
+                // 加载聊天历史
+                const savedHistory = localStorage.getItem('chatHistory');
+                if (savedHistory) {
+                    Assistant.chatHistory = JSON.parse(savedHistory);
+                    // 恢复聊天记录到界面
+                    const chatMessages = document.getElementById('chatMessages');
+                    if (chatMessages && Assistant.chatHistory.length > 0) {
+                        Assistant.chatHistory.forEach(msg => {
+                            if (msg.role === 'user' || msg.role === 'assistant') {
+                                addMessageToChat(msg.role === 'user' ? 'user' : 'assistant', msg.content, false);
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        // 聊天窗口控制
+        function toggleChatWindow() {
+            const chatWindow = document.getElementById('chatWindow');
+            const wasHidden = !chatWindow.classList.contains('show');
+            chatWindow.classList.toggle('show');
+            
+            if (chatWindow.classList.contains('show')) {
+                document.getElementById('chatInput').focus();
+                
+                // 首次打开时，欢迎消息已经包含了使用说明
+                // 通过Git部署后，Hugging Face代理会自动处理API Key，用户无需配置
+            }
+        }
+
+        function closeChatWindow() {
+            document.getElementById('chatWindow').classList.remove('show');
+        }
+
+        // 发送聊天消息
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // 禁用输入和按钮
+            input.disabled = true;
+            document.getElementById('chatSendBtn').disabled = true;
+
+            // 添加用户消息
+            addMessageToChat('user', message);
+            input.value = '';
+
+            // 添加到历史记录
+            Assistant.chatHistory.push({ role: 'user', content: message });
+
+            // 显示打字指示器
+            showTypingIndicator();
+
+            try {
+                // 调用AI
+                const response = await Assistant.callAI(message);
+                
+                // 移除打字指示器
+                hideTypingIndicator();
+
+                // 添加AI回复
+                addMessageToChat('assistant', response);
+                
+                // 添加到历史记录
+                Assistant.chatHistory.push({ role: 'assistant', content: response });
+
+                // 保存聊天历史（只保留最近50条）
+                Assistant.chatHistory = Assistant.chatHistory.slice(-50);
+                localStorage.setItem('chatHistory', JSON.stringify(Assistant.chatHistory));
+
+            } catch (error) {
+                hideTypingIndicator();
+                let errorMsg = '抱歉，我暂时无法回复。';
+                
+                if (error.message === 'PROXY_NOT_CONFIGURED' || error.message.includes('代理服务未配置') || error.message.includes('not configured') || error.message.includes('404')) {
+                    errorMsg += '\n\n💡 需要配置API Key才能使用AI助手\n\n📝 快速配置（只需1分钟）：\n1. 点击右上角⚙️按钮\n2. 选择"🤗 Hugging Face (在线)"\n3. 粘贴你的Access Token（格式：hf_xxxxx）\n4. 点击"💾 保存配置"\n\n🔗 获取Access Token：\nhttps://huggingface.co/settings/tokens\n\n✨ 配置完成后就可以开始聊天了！';
+                    
+                    // 自动打开配置窗口
+                    setTimeout(() => {
+                        showApiConfig();
+                        selectedApiOption = 'huggingface';
+                        document.querySelectorAll('.api-option').forEach((opt, index) => {
+                            const providers = ['ollama', 'huggingface', 'groq', 'openai'];
+                            opt.classList.remove('selected');
+                            if (providers[index] === 'huggingface') {
+                                opt.classList.add('selected');
+                            }
+                        });
+                        // 聚焦到API Key输入框
+                        setTimeout(() => {
+                            const apiKeyInput = document.getElementById('hfApiKey');
+                            if (apiKeyInput) {
+                                apiKeyInput.focus();
+                            }
+                        }, 300);
+                    }, 500);
+                } else if (error.message.includes('Failed to fetch') || error.message.includes('Network') || error.message.includes('网络连接错误')) {
+                    // 检查是否有配置Token
+                    const config = Assistant.getApiConfig();
+                    const hasToken = config.huggingface && config.huggingface.apiKey && config.huggingface.apiKey.trim();
+                    
+                    if (hasToken) {
+                        errorMsg += `\n\n💡 网络连接问题，但检测到你已配置Token\n\n错误详情：${error.message}\n\n🔍 请按F12打开浏览器控制台（Console标签），查看详细错误信息\n\n可能的原因：\n1. CORS跨域问题（浏览器阻止了API请求）\n2. Token格式不正确或包含特殊字符\n3. Token权限不足\n4. Hugging Face API暂时不可用\n5. 模型正在加载中（首次调用需要等待30-60秒）\n\n💡 建议：\n1. 打开浏览器控制台（F12），查看红色错误信息\n2. 检查Token是否正确保存（点击⚙️查看，确认是hf_开头）\n3. 尝试在控制台手动测试Token（我会提供测试代码）\n4. 如果模型正在加载，等待30秒后重试`;
+                    } else {
+                        errorMsg += '\n\n💡 网络连接问题：\n1. 检查网络连接是否正常\n2. 代理服务可能暂时不可用\n3. 稍后重试\n\n💡 如果问题持续，请配置API Key：\n1. 点击右上角⚙️按钮\n2. 选择"🤗 Hugging Face"\n3. 粘贴你的Access Token\n4. 保存配置';
+                    }
+                } else if (error.message.includes('Hugging Face API错误')) {
+                    // 显示详细的API错误信息
+                    errorMsg += `\n\n${error.message}\n\n💡 可能的原因：\n1. Token无效或已过期\n2. Token权限不足\n3. 模型暂时不可用（503错误表示模型正在加载）\n4. API配额已用完\n5. Token格式错误（应确保以hf_开头，没有多余空格）\n\n🔧 解决方法：\n1. 检查Token是否正确（格式：hf_xxxxx）\n2. 确认Token有read权限\n3. 如果看到503错误，等待30-60秒后重试（模型首次加载需要时间）\n4. 如果问题持续，尝试重新生成Token\n\n🔗 重新生成Token：https://huggingface.co/settings/tokens`;
+                } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
+                    errorMsg += `\n\n错误详情：${error.message}\n\n💡 Token可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查Token格式是否正确（应以hf_开头）\n3. 确认Token权限足够（需要read权限）\n4. 如果Token已过期，请重新生成\n\n🔗 获取新的Hugging Face Access Token：https://huggingface.co/settings/tokens`;
+                } else {
+                    errorMsg += `\n\n错误详情：${error.message}\n\n🔍 请按F12打开浏览器控制台（Console标签），查看详细错误信息\n\n💡 请点击右上角⚙️检查配置或切换到API Key模式`;
+                }
+                
+                addMessageToChat('assistant', errorMsg);
+            } finally {
+                // 恢复输入和按钮
+                input.disabled = false;
+                document.getElementById('chatSendBtn').disabled = false;
+                input.focus();
+            }
+        }
+
+        // 添加消息到聊天窗口
+        function addMessageToChat(role, content, animate = true) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}`;
+            
+            const avatar = role === 'user' ? '😊' : '🤗';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${content.replace(/\n/g, '<br>')}</div>
+            `;
+
+            if (animate) {
+                messageDiv.style.animation = 'fadeIn 0.3s ease-out';
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 显示/隐藏打字指示器
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const indicator = document.createElement('div');
+            indicator.className = 'chat-message assistant';
+            indicator.id = 'typingIndicator';
+            indicator.innerHTML = `
+                <div class="message-avatar">🤗</div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // 处理输入框回车
+        function handleChatInputKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        // API配置相关
+        let selectedApiOption = 'ollama';
+
+        function selectApiOption(provider) {
+            selectedApiOption = provider;
+            document.querySelectorAll('.api-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function showApiConfig() {
+            const modal = document.getElementById('apiConfigModal');
+            const config = Assistant.getApiConfig();
+            // 强制使用huggingface作为默认选项（通过Git部署后，代理会自动处理API Key）
+            selectedApiOption = 'huggingface';
+
+            // 恢复配置值
+            if (config.ollama) {
+                document.getElementById('ollamaUrl').value = config.ollama.url || 'http://localhost:11434/api/chat';
+                document.getElementById('ollamaModel').value = config.ollama.model || 'llama3.2';
+            }
+            if (config.huggingface) {
+                document.getElementById('hfApiKey').value = config.huggingface.apiKey || '';
+                document.getElementById('hfModel').value = config.huggingface.model || 'meta-llama/Llama-3.2-3B-Instruct';
+            }
+            if (config.groq) {
+                document.getElementById('groqApiKey').value = config.groq.apiKey || '';
+                document.getElementById('groqModel').value = config.groq.model || 'llama-3.1-8b-instant';
+            }
+            if (config.openai) {
+                document.getElementById('openaiApiKey').value = config.openai.apiKey || '';
+                document.getElementById('openaiModel').value = config.openai.model || 'gpt-3.5-turbo';
+            }
+
+            // 高亮选中的选项
+            document.querySelectorAll('.api-option').forEach((opt, index) => {
+                const providers = ['ollama', 'huggingface', 'groq', 'openai'];
+                opt.classList.remove('selected');
+                if (providers[index] === selectedApiOption) {
+                    opt.classList.add('selected');
+                }
+            });
+
+            modal.classList.add('show');
+            
+            // 如果Hugging Face Access Token为空，自动聚焦到输入框并滚动到该选项
+            if (selectedApiOption === 'huggingface') {
+                setTimeout(() => {
+                    const hfOption = document.querySelector('.api-option[onclick*="huggingface"]');
+                    if (hfOption) {
+                        hfOption.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    const apiKeyInput = document.getElementById('hfApiKey');
+                    if (apiKeyInput && !config.huggingface.apiKey) {
+                        apiKeyInput.focus();
+                        apiKeyInput.style.borderColor = '#667eea';
+                        apiKeyInput.style.borderWidth = '2px';
+                    }
+                }, 300);
+            }
+        }
+
+        function closeApiConfig() {
+            document.getElementById('apiConfigModal').classList.remove('show');
+        }
+
+        function saveApiConfig() {
+            const config = {
+                provider: selectedApiOption,
+                ollama: {
+                    url: document.getElementById('ollamaUrl').value.trim(),
+                    model: document.getElementById('ollamaModel').value.trim()
+                },
+                huggingface: {
+                    apiKey: document.getElementById('hfApiKey').value.trim(),
+                    model: document.getElementById('hfModel').value.trim()
+                },
+                groq: {
+                    apiKey: document.getElementById('groqApiKey').value.trim(),
+                    model: document.getElementById('groqModel').value.trim()
+                },
+                openai: {
+                    apiKey: document.getElementById('openaiApiKey').value.trim(),
+                    model: document.getElementById('openaiModel').value.trim()
+                }
+            };
+
+            // 验证配置
+            if (config.provider === 'huggingface' && !config.huggingface.apiKey) {
+                alert('请先输入Hugging Face Access Token');
+                document.getElementById('hfApiKey').focus();
+                return;
+            }
+            if (config.provider === 'groq' && !config.groq.apiKey) {
+                alert('请先输入Groq API Key');
+                document.getElementById('groqApiKey').focus();
+                return;
+            }
+            if (config.provider === 'openai' && !config.openai.apiKey) {
+                alert('请先输入OpenAI API Key');
+                document.getElementById('openaiApiKey').focus();
+                return;
+            }
+
+            Assistant.saveApiConfig(config);
+            closeApiConfig();
+            
+            // 显示保存成功提示
+            const providerNames = {
+                'huggingface': 'Hugging Face',
+                'groq': 'Groq',
+                'ollama': 'Ollama',
+                'openai': 'OpenAI'
+            };
+            
+            addMessageToChat('assistant', `✅ ${providerNames[config.provider] || 'API'}配置已保存！现在可以开始聊天了～\n\n试试问我："你今天感觉怎么样？"`, false);
+        }
 
         // 原因按钮点击事件
         reasonButtons.forEach(button => {
@@ -461,6 +2488,21 @@
                 // 添加选中状态到当前按钮
                 this.classList.add('selected');
                 
+                // 保存心情记录（难过 + 原因）
+                saveMoodRecord('sad', reason);
+                
+                // 保存当前心情（用于日记和音乐推荐）
+                Storage.setCurrentMood('sad');
+                
+                // 更新打卡天数
+                const newStreak = updateStreak();
+                
+                // 更新打卡提醒
+                showCheckinReminder();
+                
+                // 确保历史记录按钮存在
+                ensureHistoryButton();
+                
                 // 获取对应的开导语言
                 const reasonMsgList = reasonMessages[reason];
                 const randomMessage = reasonMsgList[Math.floor(Math.random() * reasonMsgList.length)];
@@ -471,6 +2513,17 @@
                     messageElement.textContent = randomMessage;
                     messageElement.classList.add('show');
                 }, 50);
+
+                // 自动显示音乐推荐
+                setTimeout(() => {
+                    showMusicRecommendations('sad');
+                }, 800);
+
+                // 如果有历史记录区域，更新图表
+                const historySection = document.getElementById('historySection');
+                if (historySection && historySection.style.display !== 'none') {
+                    renderHistoryChart();
+                }
             });
         });
 

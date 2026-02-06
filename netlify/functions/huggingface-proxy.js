@@ -68,35 +68,34 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // 构建对话文本（Hugging Face使用文本格式）
-        const conversationText = messages.map(msg => {
-            if (msg.role === 'system') {
-                return `系统: ${msg.content}`;
-            } else if (msg.role === 'user') {
-                return `用户: ${msg.content}`;
-            } else {
-                return `助手: ${msg.content}`;
-            }
-        }).join('\n');
+        // 使用新的 router.huggingface.co API（OpenAI兼容格式）
+        // 转换消息格式为 OpenAI 兼容格式
+        const openaiMessages = messages.map(msg => ({
+            role: msg.role === 'system' ? 'system' : msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content
+        }));
 
-        const prompt = `${systemPrompt || '你是一个温暖、贴心的情感陪伴助手。'}\n\n${conversationText}\n助手:`;
+        // 如果有 systemPrompt，添加到消息列表开头
+        if (systemPrompt) {
+            openaiMessages.unshift({
+                role: 'system',
+                content: systemPrompt
+            });
+        }
 
-        // 调用Hugging Face API
-        // 注意：api-inference.huggingface.co 虽然显示 deprecated，但目前仍可使用
-        // router.huggingface.co 需要不同的格式（OpenAI兼容），暂时使用旧端点
-        const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+        // 调用新的 router.huggingface.co API
+        // 使用 /v1/chat/completions 端点（OpenAI兼容）
+        const response = await fetch(`https://router.huggingface.co/v1/chat/completions`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                inputs: prompt,
-                parameters: {
-                    max_new_tokens: 200,
-                    temperature: 0.7,
-                    return_full_text: false
-                }
+                model: model, // 例如: meta-llama/Llama-3.2-3B-Instruct
+                messages: openaiMessages,
+                max_tokens: 200,
+                temperature: 0.7
             })
         });
 
@@ -124,23 +123,28 @@ exports.handler = async (event, context) => {
 
         const data = await response.json();
         
-        // Hugging Face返回格式可能是数组或对象
+        // 新的 router API 返回 OpenAI 兼容格式
+        // 格式: { choices: [{ message: { content: "..." } }] }
         let generatedText = '';
-        if (Array.isArray(data)) {
+        
+        if (data.choices && data.choices.length > 0) {
+            // OpenAI 兼容格式
+            generatedText = data.choices[0]?.message?.content || '';
+        } else if (data.content) {
+            // 直接 content 字段
+            generatedText = data.content;
+        } else if (Array.isArray(data)) {
+            // 旧格式（数组）
             generatedText = data[0]?.generated_text || '';
         } else if (data.generated_text) {
+            // 旧格式（对象）
             generatedText = data.generated_text;
         } else if (typeof data === 'string') {
             generatedText = data;
         }
 
-        // 提取助手回复（如果包含完整对话，只取助手部分）
-        if (generatedText.includes('助手:')) {
-            generatedText = generatedText.split('助手:').pop().trim();
-        }
-
-        // 清理文本（移除可能的重复前缀）
-        generatedText = generatedText.replace(/^助手:\s*/i, '').trim();
+        // 清理文本
+        generatedText = generatedText.trim();
 
         if (!generatedText) {
             return {
@@ -150,7 +154,8 @@ exports.handler = async (event, context) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    error: 'Invalid response from Hugging Face API' 
+                    error: 'Invalid response from Hugging Face API',
+                    debug: JSON.stringify(data)
                 })
             };
         }

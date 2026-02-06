@@ -1955,21 +1955,35 @@
                 console.log('开始直接调用Hugging Face API，模型:', config.model);
 
                 try {
-                    // 调用Hugging Face API
-                    // 注意：api-inference.huggingface.co 虽然显示 deprecated，但目前仍可使用
-                    // router.huggingface.co 需要不同的格式（OpenAI兼容），暂时使用旧端点
-                    const response = await fetch(`https://api-inference.huggingface.co/models/${config.model}`, {
+                    // 使用新的 router.huggingface.co API（OpenAI兼容格式）
+                    // 注意：直接调用会有CORS问题，应该优先使用代理
+                    const messages = [
+                        ...Assistant.chatHistory.slice(-10).map(msg => ({
+                            role: msg.role === 'system' ? 'system' : msg.role === 'user' ? 'user' : 'assistant',
+                            content: msg.content
+                        })),
+                        { role: 'user', content: message }
+                    ];
+                    
+                    // 如果有 systemPrompt，添加到消息列表开头
+                    if (systemPrompt) {
+                        messages.unshift({
+                            role: 'system',
+                            content: systemPrompt
+                        });
+                    }
+                    
+                    const response = await fetch(`https://router.huggingface.co/v1/chat/completions`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${config.apiKey}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            inputs: `${systemPrompt}\n\n用户: ${message}\n助手:`,
-                            parameters: {
-                                max_new_tokens: 150,
-                                temperature: 0.7
-                            }
+                            model: config.model,
+                            messages: messages,
+                            max_tokens: 150,
+                            temperature: 0.7
                         })
                     });
 
@@ -2003,20 +2017,27 @@
                     const data = await response.json();
                     console.log('API响应数据:', data);
                     
-                    // 处理Hugging Face返回的不同格式
+                    // 处理新的 router API 返回格式（OpenAI兼容）
                     let generatedText = '';
-                    if (Array.isArray(data)) {
+                    
+                    if (data.choices && data.choices.length > 0) {
+                        // OpenAI 兼容格式: { choices: [{ message: { content: "..." } }] }
+                        generatedText = data.choices[0]?.message?.content || '';
+                    } else if (data.content) {
+                        // 直接 content 字段
+                        generatedText = data.content;
+                    } else if (Array.isArray(data)) {
+                        // 旧格式（数组）
                         generatedText = data[0]?.generated_text || '';
                     } else if (data.generated_text) {
+                        // 旧格式（对象）
                         generatedText = data.generated_text;
                     } else if (typeof data === 'string') {
                         generatedText = data;
                     }
                     
-                    // 提取助手回复
-                    if (generatedText.includes('助手:')) {
-                        generatedText = generatedText.split('助手:').pop().trim();
-                    }
+                    // 清理文本
+                    generatedText = generatedText.trim();
                     
                     return generatedText || '抱歉，我暂时无法理解，能再说一遍吗？';
                 } catch (fetchError) {
