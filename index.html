@@ -1831,6 +1831,14 @@
                 const config = Assistant.getApiConfig();
                 const systemPrompt = Assistant.getSystemPrompt();
 
+                // 调试信息：检查配置
+                console.log('当前配置:', {
+                    provider: config.provider,
+                    hasApiKey: !!(config.huggingface && config.huggingface.apiKey),
+                    apiKeyLength: config.huggingface?.apiKey?.length || 0,
+                    apiKeyPrefix: config.huggingface?.apiKey?.substring(0, 3) || 'none'
+                });
+
                 try {
                     switch (config.provider) {
                         case 'ollama':
@@ -1923,8 +1931,9 @@
                             console.log('代理不可用，使用直接调用模式:', error.message);
                             return await this.callHuggingFaceDirect(message, systemPrompt, config);
                         } catch (directError) {
-                            // 如果直接调用也失败，抛出原始错误
-                            throw error;
+                            // 如果直接调用也失败，抛出直接调用的错误（包含更详细的API错误信息）
+                            console.error('直接调用也失败:', directError);
+                            throw directError;
                         }
                     }
                     
@@ -2223,7 +2232,15 @@
                         }, 300);
                     }, 500);
                 } else if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
-                    errorMsg += '\n\n💡 网络连接问题：\n1. 检查网络连接是否正常\n2. 代理服务可能暂时不可用\n3. 稍后重试\n\n💡 如果问题持续，可以切换到API Key模式';
+                    // 检查是否有配置Token
+                    const config = Assistant.getApiConfig();
+                    const hasToken = config.huggingface && config.huggingface.apiKey && config.huggingface.apiKey.trim();
+                    
+                    if (hasToken) {
+                        errorMsg += '\n\n💡 网络连接问题，但检测到你已配置Token\n\n🔍 请按F12打开浏览器控制台，查看详细错误信息\n\n可能的原因：\n1. Token格式不正确\n2. Token权限不足\n3. Hugging Face API暂时不可用\n4. 模型正在加载中（首次调用需要等待）\n\n💡 建议：\n1. 检查Token是否正确保存（点击⚙️查看）\n2. 确认Token格式：hf_xxxxx\n3. 尝试重新生成Token';
+                    } else {
+                        errorMsg += '\n\n💡 网络连接问题：\n1. 检查网络连接是否正常\n2. 代理服务可能暂时不可用\n3. 稍后重试\n\n💡 如果问题持续，请配置API Key：\n1. 点击右上角⚙️按钮\n2. 选择"🤗 Hugging Face"\n3. 粘贴你的Access Token\n4. 保存配置';
+                    }
                 } else if (error.message.includes('API Key') || error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
                     errorMsg += '\n\n💡 Token可能无效或已过期：\n1. 点击右上角⚙️按钮\n2. 检查Token格式是否正确（应以hf_开头）\n3. 确认Token权限足够（需要read权限）\n4. 如果Token已过期，请重新生成\n\n🔗 获取新的Hugging Face Access Token：https://huggingface.co/settings/tokens';
                 } else if (error.message.includes('Hugging Face API错误')) {
