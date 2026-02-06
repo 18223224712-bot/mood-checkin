@@ -1955,7 +1955,7 @@
                 console.log('开始直接调用Hugging Face API，模型:', config.model);
 
                 try {
-                    const response = await fetch(`https://api-inference.huggingface.co/models/${config.model}`, {
+                    const response = await fetch(`https://router.huggingface.co/models/${config.model}`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${config.apiKey}`,
